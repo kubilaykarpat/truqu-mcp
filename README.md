@@ -11,9 +11,32 @@ A Model Context Protocol (MCP) server for interacting with Truqu goal and feedba
 3. Click on **Your data**
 4. Download your data as a **JSON file**
 
-> **Note:** Truqu offers 4 export options, but this MCP server requires the "Per user - JSON file" option which contains all your data.
+### Step 2: Add MCP server to your client
 
-### Step 2: Run the MCP server
+#### For Claude Desktop:
+
+1. Open Claude Desktop settings
+2. Go to the "Developer" section
+3. Click "Edit Config" button under "Local MCP servers"
+4. Edit the config file to add the MCP server:
+
+```json
+{
+  "mcpServers": {
+    "truqu-mcp": {
+      "command": "npx",
+      "args": ["truqu-mcp", "/path/to/your/downloaded-truqu-data.json"]
+    }
+  }
+}
+```
+
+5. Replace `/path/to/your/downloaded-truqu-data.json` with the actual path to your Truqu JSON file
+6. Restart Claude Desktop
+
+#### For other MCP clients:
+
+Run the server directly:
 
 ```bash
 npx truqu-mcp "/path/to/your/downloaded-truqu-data.json"
