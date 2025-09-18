@@ -273,6 +273,23 @@ Configure your MCP client with one of these approaches:
 }
 ```
 
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md) for development setup and guidelines.
+
+### Automated Publishing
+
+This package uses GitHub Actions for automated publishing:
+
+- **CI**: Runs tests on every push/PR
+- **Publish**: Automatically publishes to npm when a new tag is created
+
+To release a new version:
+
+1. Update `version` in `package.json`
+2. Create and push a git tag: `git tag v0.1.2 && git push origin v0.1.2`
+3. The package will be automatically built and published to npm
+
 ## License
 
 MIT
