@@ -1,6 +1,6 @@
 {
     "name": "truqu-mcp",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A MCP server for interacting with Truqu goal and feedback data",
     "main": "dist/index.js",
     "bin": {
