@@ -2,6 +2,25 @@
 
 A Model Context Protocol (MCP) server for interacting with Truqu goal and feedback data, built with TypeScript.
 
+## Getting Started
+
+### Step 1: Export your Truqu data
+
+1. In Truqu, click on your **profile picture** (top right corner)
+2. Select **Settings**
+3. Click on **Your data**
+4. Download your data as a **JSON file**
+
+> **Note:** Truqu offers 4 export options, but this MCP server requires the "Per user - JSON file" option which contains all your data.
+
+### Step 2: Run the MCP server
+
+```bash
+npx truqu-mcp "/path/to/your/downloaded-truqu-data.json"
+```
+
+That's it! The server will start and load your Truqu data automatically.
+
 ## What is MCP?
 
 The Model Context Protocol (MCP) is an open standard that enables AI applications to securely connect to external data sources and tools. This server provides a foundation for building custom MCP integrations.
@@ -24,6 +43,16 @@ The Model Context Protocol (MCP) is an open standard that enables AI application
 
 ## Installation
 
+### Option 1: Use directly with npx (Recommended)
+
+No installation required! Just use the published npm package:
+
+```bash
+npx truqu-mcp "/path/to/your/truqu-data.json"
+```
+
+### Option 2: Local development
+
 1. Clone this repository
 2. Install dependencies:
 
@@ -35,33 +64,36 @@ npm install
 
 The server requires a path to your Truqu data JSON file. You can provide this in two ways:
 
-### Method 1: Command Line Argument
+### Method 1: Command Line Argument (Recommended)
 
 ```bash
-# Development
-npm run dev:example
-# or with custom file
-tsx src/index.ts "/path/to/your/truqu-data.json"
+# Using npm package (recommended)
+npx truqu-mcp "/path/to/your/truqu-data.json"
 
-# Production
-npm run start:example
-# or with custom file
-npm run build && node dist/index.js "/path/to/your/truqu-data.json"
+# Local development (alternative)
+tsx src/index.ts "/path/to/your/truqu-data.json"
 ```
 
 ### Method 2: Environment Variable
 
 ```bash
+# Using npm package (recommended)
 export TRUQU_DATA_PATH="/path/to/your/truqu-data.json"
-npm run dev
+npx truqu-mcp
+
+# Local development (alternative)
+export TRUQU_DATA_PATH="/path/to/your/truqu-data.json"
+tsx src/index.ts
 ```
 
-## Development
+## Development (Local only)
+
+For local development and contributions:
 
 Start the development server with hot reload:
 
 ```bash
-npm run dev:example  # Uses the example data file
+tsx src/index.ts "/path/to/your/truqu-data.json"
 ```
 
 Watch for changes during development:
@@ -70,7 +102,7 @@ Watch for changes during development:
 npm run watch
 ```
 
-## Building
+## Building (Local only)
 
 Build the TypeScript code to JavaScript:
 
@@ -168,42 +200,44 @@ To add new tools:
 
 To use this server with an MCP client, you have several options:
 
-### Option 1: Using npx (Recommended for testing)
+### Option 1: Using npm package (Recommended)
 
-You can run the server directly with npx without building:
+Run the server directly from npm:
+
+```bash
+npx truqu-mcp "/path/to/your/truqu-data.json"
+```
+
+### Option 2: Local development
+
+For local development and testing:
 
 ```bash
 npx tsx src/index.ts "/path/to/your/truqu-data.json"
 ```
 
-### Option 2: After building
-
-1. Build the project: `npm run build`
-2. Run with Node.js: `node dist/index.js "/path/to/your/truqu-data.json"`
-
 ### Client Configuration
 
 Configure your MCP client with one of these approaches:
 
-**For development/testing:**
+**Using npm package (Recommended):**
+
+- Command: `npx truqu-mcp "/path/to/your/truqu-data.json"`
+- No working directory required
+
+**Local development:**
 
 - Command: `npx tsx src/index.ts "/path/to/your/truqu-data.json"`
 - Working directory: `/path/to/truqu-mcp`
 
-**For production:**
-
-- Command: `node dist/index.js "/path/to/your/truqu-data.json"`
-- Working directory: `/path/to/truqu-mcp`
-
-**Example Claude Desktop configuration:**
+**Example Claude Desktop configuration (npm package):**
 
 ```json
 {
   "mcpServers": {
     "truqu-mcp": {
       "command": "npx",
-      "args": ["tsx", "src/index.ts", "/path/to/your/truqu-data.json"],
-      "cwd": "/path/to/truqu-mcp"
+      "args": ["truqu-mcp", "/path/to/your/truqu-data.json"]
     }
   }
 }
@@ -216,11 +250,24 @@ Configure your MCP client with one of these approaches:
   "mcpServers": {
     "truqu-mcp": {
       "command": "npx",
-      "args": ["tsx", "src/index.ts"],
-      "cwd": "/path/to/truqu-mcp",
+      "args": ["truqu-mcp"],
       "env": {
         "TRUQU_DATA_PATH": "/path/to/your/truqu-data.json"
       }
+    }
+  }
+}
+```
+
+**Local development configuration:**
+
+```json
+{
+  "mcpServers": {
+    "truqu-mcp": {
+      "command": "npx",
+      "args": ["tsx", "src/index.ts", "/path/to/your/truqu-data.json"],
+      "cwd": "/path/to/truqu-mcp"
     }
   }
 }

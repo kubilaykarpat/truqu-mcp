@@ -436,8 +436,9 @@ const dataFilePath = process.argv[2] || process.env.TRUQU_DATA_PATH;
 
 if (!dataFilePath) {
     console.error("Error: Truqu data file path is required.");
-    console.error("Usage: node dist/index.js <path-to-truqu-data.json>");
+    console.error("Usage: npx truqu-mcp <path-to-truqu-data.json>");
     console.error("Or set TRUQU_DATA_PATH environment variable");
+    console.error("For local development: tsx src/index.ts <path-to-truqu-data.json>");
     process.exit(1);
 }
 
