@@ -19,11 +19,50 @@ Thank you for your interest in contributing to the Truqu MCP Server!
 
 ## Publishing
 
-The package is automatically published to npm when a new tag is created:
+The package is automatically published to npm when a new git tag is created.
 
-1. Update the version in `package.json`
-2. Create and push a git tag: `git tag v0.1.2 && git push origin v0.1.2`
-3. The GitHub workflow will automatically build and publish to npm
+### Release Process:
+
+1. **Update the version in `package.json`:**
+
+   ```bash
+   npm version patch   # for bug fixes (0.1.1 → 0.1.2)
+   npm version minor   # for new features (0.1.1 → 0.2.0)
+   npm version major   # for breaking changes (0.1.1 → 1.0.0)
+   ```
+
+2. **Push the changes and tag:**
+
+   ```bash
+   git push origin main --tags
+   ```
+
+3. **GitHub workflow will automatically:**
+   - Install dependencies
+   - Build the package (via `prepublishOnly` script)
+   - Publish to npm
+
+### Alternative Manual Process:
+
+1. **Manually update version in `package.json`**
+2. **Create and push a git tag:**
+   ```bash
+   git tag v0.1.3
+   git push origin v0.1.3
+   ```
+
+### Version Naming Convention:
+
+- `v0.1.3` - Bug fixes (patch)
+- `v0.2.0` - New features (minor)
+- `v1.0.0` - Breaking changes (major)
+
+### Simple Workflow:
+
+- ✅ **Standard npm versioning**: Uses `npm version` command
+- ✅ **Automatic build**: `prepublishOnly` script handles building
+- ✅ **Clean publishing**: Direct publish on tag creation
+- ✅ **No complex logic**: Straightforward tag-to-publish workflow
 
 ## GitHub Workflows
 
@@ -36,9 +75,9 @@ The package is automatically published to npm when a new tag is created:
 
 ### Publish Workflow (`.github/workflows/publish.yml`)
 
-- Runs when a new tag is pushed or release is published
-- Builds the package
-- Publishes to npm registry
+- Runs when a new tag is pushed (`v*`)
+- Installs dependencies
+- Publishes to npm registry (build happens via `prepublishOnly` script)
 - Requires `NPM_TOKEN` secret to be set in GitHub repository settings
 
 ## Setting up NPM_TOKEN Secret

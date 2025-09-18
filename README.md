@@ -286,9 +286,9 @@ This package uses GitHub Actions for automated publishing:
 
 To release a new version:
 
-1. Update `version` in `package.json`
-2. Create and push a git tag: `git tag v0.1.2 && git push origin v0.1.2`
-3. The package will be automatically built and published to npm
+1. Update version: `npm version patch` (or `minor`/`major`)
+2. Push changes: `git push origin main --tags`
+3. GitHub Actions will automatically build and publish to npm
 
 ## License
 
