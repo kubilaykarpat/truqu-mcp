@@ -1,6 +1,6 @@
 # Truqu MCP Server
 
-A skeleton Model Context Protocol (MCP) server built with TypeScript.
+A Model Context Protocol (MCP) server for interacting with Truqu goal and feedback data, built with TypeScript.
 
 ## What is MCP?
 
@@ -10,7 +10,10 @@ The Model Context Protocol (MCP) is an open standard that enables AI application
 
 - Built with TypeScript for type safety
 - Uses the official MCP TypeScript SDK
-- Includes a sample "hello" tool
+- Load and parse Truqu JSON data exports
+- Filter data by user ownership automatically
+- Date range filtering for goals, feedback, and reflections
+- Comprehensive goal management tools
 - Hot reload during development
 - Production-ready build configuration
 
@@ -28,12 +31,37 @@ The Model Context Protocol (MCP) is an open standard that enables AI application
 npm install
 ```
 
+## Configuration
+
+The server requires a path to your Truqu data JSON file. You can provide this in two ways:
+
+### Method 1: Command Line Argument
+
+```bash
+# Development
+npm run dev:example
+# or with custom file
+tsx src/index.ts "/path/to/your/truqu-data.json"
+
+# Production
+npm run start:example
+# or with custom file
+npm run build && node dist/index.js "/path/to/your/truqu-data.json"
+```
+
+### Method 2: Environment Variable
+
+```bash
+export TRUQU_DATA_PATH="/path/to/your/truqu-data.json"
+npm run dev
+```
+
 ## Development
 
 Start the development server with hot reload:
 
 ```bash
-npm run dev
+npm run dev:example  # Uses the example data file
 ```
 
 Watch for changes during development:
@@ -48,14 +76,6 @@ Build the TypeScript code to JavaScript:
 
 ```bash
 npm run build
-```
-
-## Running in Production
-
-After building, start the server:
-
-```bash
-npm start
 ```
 
 ## Project Structure
@@ -73,10 +93,68 @@ truqu-mcp/
 
 ## Available Tools
 
-The server currently provides one sample tool:
+The server provides tools to interact with Truqu goal and feedback data:
 
-- **hello**: Says hello with a custom message
-  - Parameters: `name` (optional string, defaults to "World")
+### Goals
+
+- **get_goals_list**: Get a list of user's goals with basic information (id, title, dates, status)
+  - Parameters: `startDate` (optional string), `endDate` (optional string) - Date filtering in YYYY-MM-DD format
+- **get_goals_detailed**: Get detailed information about user's goals including action points and items
+  - Parameters: `startDate` (optional string), `endDate` (optional string) - Date filtering in YYYY-MM-DD format
+- **get_goal_by_id**: Get a specific goal by its ID
+  - Parameters: `goalId` (required string) - The ID of the goal to retrieve
+
+### Feedback
+
+- **get_feedback**: Get feedback/reviews given to the user
+  - Parameters: `startDate` (optional string), `endDate` (optional string) - Date filtering in YYYY-MM-DD format
+
+### Reflections
+
+- **get_reflections**: Get user's reflection reports
+  - Parameters: `startDate` (optional string), `endDate` (optional string) - Date filtering in YYYY-MM-DD format
+
+## Usage Example
+
+Once the server is running with your Truqu data configured, you can use these tools:
+
+1. Get a list of your goals:
+
+```javascript
+// Get all goals
+get_goals_list({});
+
+// Get goals from 2024
+get_goals_list({ startDate: "2024-01-01", endDate: "2024-12-31" });
+```
+
+2. Get detailed goal information:
+
+```javascript
+// Get detailed info for all goals
+get_goals_detailed({});
+
+// Get a specific goal
+get_goal_by_id({ goalId: "168a7025-f6cc-41cc-abd7-087467c634ae" });
+```
+
+3. Get feedback and reflections:
+
+```javascript
+// Get all feedback
+get_feedback({});
+
+// Get reflections from 2025
+get_reflections({ startDate: "2025-01-01" });
+```
+
+## Data Filtering
+
+- The server automatically filters data to show only items owned by the current user
+- Goals are filtered by the `owner.id` field
+- Reviews are filtered by the `professional.id` field
+- Reflections are filtered by the `user.id` field
+- Date filtering uses the `created` field for goals and reflections, and the `date` field for reviews
 
 ## Extending the Server
 
@@ -95,13 +173,13 @@ To use this server with an MCP client, you have several options:
 You can run the server directly with npx without building:
 
 ```bash
-npx tsx src/index.ts
+npx tsx src/index.ts "/path/to/your/truqu-data.json"
 ```
 
 ### Option 2: After building
 
 1. Build the project: `npm run build`
-2. Run with Node.js: `node dist/index.js`
+2. Run with Node.js: `node dist/index.js "/path/to/your/truqu-data.json"`
 
 ### Client Configuration
 
@@ -109,12 +187,12 @@ Configure your MCP client with one of these approaches:
 
 **For development/testing:**
 
-- Command: `npx tsx src/index.ts`
+- Command: `npx tsx src/index.ts "/path/to/your/truqu-data.json"`
 - Working directory: `/path/to/truqu-mcp`
 
 **For production:**
 
-- Command: `node dist/index.js`
+- Command: `node dist/index.js "/path/to/your/truqu-data.json"`
 - Working directory: `/path/to/truqu-mcp`
 
 **Example Claude Desktop configuration:**
@@ -124,8 +202,25 @@ Configure your MCP client with one of these approaches:
   "mcpServers": {
     "truqu-mcp": {
       "command": "npx",
-      "args": ["tsx", "src/index.ts"],
+      "args": ["tsx", "src/index.ts", "/path/to/your/truqu-data.json"],
       "cwd": "/path/to/truqu-mcp"
+    }
+  }
+}
+```
+
+**Alternative with environment variable:**
+
+```json
+{
+  "mcpServers": {
+    "truqu-mcp": {
+      "command": "npx",
+      "args": ["tsx", "src/index.ts"],
+      "cwd": "/path/to/truqu-mcp",
+      "env": {
+        "TRUQU_DATA_PATH": "/path/to/your/truqu-data.json"
+      }
     }
   }
 }

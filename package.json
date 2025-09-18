@@ -1,7 +1,7 @@
 {
     "name": "truqu-mcp",
     "version": "0.1.0",
-    "description": "A skeleton MCP server built with TypeScript",
+    "description": "A MCP server for interacting with Truqu goal and feedback data",
     "main": "dist/index.js",
     "type": "module",
     "scripts": {
